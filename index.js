@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import http from "http";
+import cors from 'cors';
 import { Server as IOServer } from "socket.io";
 
 import "./config/redis.js";
@@ -16,6 +17,9 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
+
+// Routes
 app.use("/api/otp", otpRoutes);
 app.use("/api/role", roleRoutes);
 app.use("/api/products", productRoutes);

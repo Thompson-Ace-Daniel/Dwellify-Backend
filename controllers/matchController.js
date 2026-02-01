@@ -1,5 +1,5 @@
 import redisClient from "../config/redis.js";
-import { db } from "../config/firebase.js";
+import { db } from "../config/firebaseAdmin.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -96,7 +96,7 @@ export const matchAgentToClient = async (req, res) => {
 
       // Skip agents who declined this request
       const declinedAgents = await redisClient.sMembers(
-        `client:request:declined:${requestId}`
+        `client:request:declined:${requestId}`,
       );
       if (declinedAgents.includes(agentId)) continue;
 
@@ -109,10 +109,7 @@ export const matchAgentToClient = async (req, res) => {
        */
       let canServe = false;
       try {
-        canServe = await agentHasPropertyType(
-          agentId,
-          requestPropertyType
-        );
+        canServe = await agentHasPropertyType(agentId, requestPropertyType);
       } catch {
         continue;
       }
@@ -121,12 +118,7 @@ export const matchAgentToClient = async (req, res) => {
       /**
        * 4️⃣ DISTANCE CHECK
        */
-      const distance = getDistanceKm(
-        clientLat,
-        clientLng,
-        agentLat,
-        agentLng
-      );
+      const distance = getDistanceKm(clientLat, clientLng, agentLat, agentLng);
 
       if (distance < shortestDistance) {
         shortestDistance = distance;
@@ -232,9 +224,7 @@ const getDistanceKm = (lat1, lon1, lat2, lon2) => {
 
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) ** 2;
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) ** 2;
 
   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 };

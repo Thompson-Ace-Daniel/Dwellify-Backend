@@ -1,16 +1,9 @@
-import { db } from "../config/firebase.js";
+import { db } from "../config/firebaseAdmin.js";
 import { sendPushNotification } from "../utils/push.js";
 
 export const clinetRequest = async (req, res) => {
   try {
-    const {
-      agentId,
-      clientId,
-      clientName,
-      propertyType,
-      lat,
-      lng,
-    } = req.body;
+    const { agentId, clientId, clientName, propertyType, lat, lng } = req.body;
 
     if (!agentId || !clientId || !propertyType) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -27,19 +20,19 @@ export const clinetRequest = async (req, res) => {
       createdAt: Date.now(),
     });
 
-    // 🔔 get agent push token
+    // 🔔 Fetch agent FCM token
     const agentSnap = await db.collection("agents").doc(agentId).get();
-    const pushToken = agentSnap.data()?.pushToken;
+    const fcmToken = agentSnap.exists ? agentSnap.data().fcmToken : null;
 
-    if (pushToken) {
-      await sendPushNotification(pushToken, {
+    if (fcmToken) {
+      await sendPushNotification(fcmToken, {
         title: "New Client 🚨",
         body: `${clientName} needs a ${propertyType}`,
         data: {
           requestId: docRef.id,
-          lat,
-          lng,
-        },  
+          lat: String(lat),
+          lng: String(lng),
+        },
       });
     }
 

@@ -1,4 +1,4 @@
-import { db } from "../config/firebase.js";
+import { db } from "../config/firebaseAdmin.js";
 
 export const getAgentProfile = async (req, res) => {
   try {
@@ -40,15 +40,7 @@ export const getAgentProfile = async (req, res) => {
 };
 
 export const verifyAgent = async (req, res) => {
-  const {
-    uid,
-    name,
-    email,
-    address,
-    phone,
-    agencyName,
-    licenseId,
-  } = req.body;
+  const { uid, name, email, address, phone, agencyName, licenseId } = req.body;
 
   // 1️⃣ Basic validation
   if (!uid || !name || !email || !address) {
@@ -91,7 +83,7 @@ export const verifyAgent = async (req, res) => {
         agentStatus: "submitted",
         updatedAt: new Date(),
       },
-      { merge: true }
+      { merge: true },
     );
 
     return res.status(200).json({

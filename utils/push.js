@@ -1,27 +1,26 @@
-import { Expo } from "expo-server-sdk";
+import { admin } from "../config/firebaseAdmin.js";
 
-const expo = new Expo();
+export const sendPushNotification = async (fcmToken, payload) => {
+  if (!fcmToken) return;
 
-export async function sendPushNotification(pushToken, payload) {
-  if (!Expo.isExpoPushToken(pushToken)) {
-    console.log("Invalid Expo push token");
-    return;
-  }
-
-  const messages = [
-    {
-      to: pushToken,
-      sound: "default", // 🔊 Uber-style sound
-      title: payload.title,
-      body: payload.body,
-      data: payload.data,
+  const message = {
+    token: fcmToken,
+    android: {
       priority: "high",
     },
-  ];
+    data: {
+      title: payload.title,
+      body: payload.body,
+      ...(payload.data || {}),
+    },
+  };
 
   try {
-    await expo.sendPushNotificationsAsync(messages);
-  } catch (error) {
-    console.error("Push error:", error);
+    const response = await admin.messaging().send(message);
+    console.log("✅ Push sent:", response);
+    return response;
+  } catch (err) {
+    console.error("❌ Push failed:", err.message);
+    throw err;
   }
-}
+};

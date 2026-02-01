@@ -1,4 +1,4 @@
-import { db } from "../config/firebase.js";
+import { db } from "../config/firebaseAdmin.js";
 
 /**
  * ===============================
@@ -15,9 +15,7 @@ export const getProductsByAgentId = async (req, res) => {
       return res.status(400).json({ error: "agentId is required" });
     }
 
-    let query = db
-      .collection("rentalProducts")
-      .where("agentId", "==", agentId);
+    let query = db.collection("rentalProducts").where("agentId", "==", agentId);
 
     // Optional filter (Hotel, Apartment, Shortlet)
     if (propertyType) {

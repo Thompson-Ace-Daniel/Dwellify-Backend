@@ -1,4 +1,4 @@
-import { admin, db } from "../config/firebase.js";
+import { admin, db } from "../config/firebaseAdmin.js";
 
 export const assignRole = async (req, res) => {
   const { uid, role } = req.body;
@@ -16,14 +16,17 @@ export const assignRole = async (req, res) => {
     await admin.auth().setCustomUserClaims(uid, { role });
 
     // Save role only
-    await db.collection("users").doc(uid).set(
-      {
-        role,
-        agentStatus: role === "agent" ? "pending" : null,
-        updatedAt: new Date(),
-      },
-      { merge: true }
-    );
+    await db
+      .collection("users")
+      .doc(uid)
+      .set(
+        {
+          role,
+          agentStatus: role === "agent" ? "pending" : null,
+          updatedAt: new Date(),
+        },
+        { merge: true },
+      );
 
     return res.status(200).json({
       success: true,

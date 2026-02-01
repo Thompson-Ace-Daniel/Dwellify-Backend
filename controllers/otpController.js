@@ -1,5 +1,5 @@
 import axios from "axios";
-import { admin, db } from "../config/firebase.js";
+import { admin, db } from "../config/firebaseAdmin.js";
 
 /* =========================
    SEND OTP
@@ -27,7 +27,7 @@ export const sendOTP = async (req, res) => {
         message_text:
           "Your Bytemark Institute verification code is <123456>. It expires in 30 minutes.",
         pin_type: "NUMERIC",
-      }
+      },
     );
 
     return res.status(200).json({
@@ -62,7 +62,7 @@ export const verifyOTP = async (req, res) => {
         api_key: process.env.TERMII_API_KEY,
         pin_id,
         pin,
-      }
+      },
     );
 
     const verified =
@@ -103,9 +103,7 @@ export const verifyOTP = async (req, res) => {
       isNewUser = true;
     }
 
-    const firebaseToken = await admin
-      .auth()
-      .createCustomToken(userRecord.uid);
+    const firebaseToken = await admin.auth().createCustomToken(userRecord.uid);
 
     return res.status(200).json({
       success: true,

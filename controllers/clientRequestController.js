@@ -1,5 +1,5 @@
 import redisClient from "../config/redis.js";
-import { db } from "../config/firebase.js";
+import { db } from "../config/firebaseAdmin.js";
 
 /**
  * ACCEPT REQUEST
@@ -89,10 +89,7 @@ export const declineClientRequest = async (req, res) => {
       declinedAt: Date.now().toString(),
     });
 
-    await redisClient.sAdd(
-      `client:request:declined:${requestId}`,
-      agentId
-    );
+    await redisClient.sAdd(`client:request:declined:${requestId}`, agentId);
 
     return res.json({
       message: "Request declined successfully",

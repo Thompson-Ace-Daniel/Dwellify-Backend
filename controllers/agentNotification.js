@@ -1,20 +1,27 @@
-import { db } from "../config/firebase.js";
+import { db } from "../config/firebaseAdmin.js";
 
 export const agentNotification = async (req, res) => {
   try {
-    const { agentId, pushToken } = req.body;
+    const { agentId, fcmToken } = req.body;
 
-    if (!agentId || !pushToken) {
-      return res.status(400).json({ error: "Missing fields" });
+    if (!agentId || !fcmToken) {
+      return res.status(400).json({ error: "agentId and fcmToken required" });
     }
 
     await db.collection("agents").doc(agentId).set(
-      { pushToken },
-      { merge: true }
+      {
+        fcmToken,
+        updatedAt: Date.now(),
+      },
+      { merge: true },
     );
 
-    res.json({ success: true, message: "Push token saved" });
+    res.json({
+      success: true,
+      message: "FCM token saved",
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Failed to save token" });
   }
 };

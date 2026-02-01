@@ -1,5 +1,5 @@
 import redisClient from "../config/redis.js";
-import { db } from "../config/firebase.js";
+import { db } from "../config/firebaseAdmin.js";
 
 /**
  * ===============================
@@ -30,7 +30,6 @@ export const agentGoOnline = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
-
 
 export const agentGoOffline = async (req, res) => {
   try {
@@ -151,7 +150,6 @@ export const getAgentLocation = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
-
 
 /**
  * ===============================
