@@ -1,5 +1,5 @@
 import redisClient from "../config/redis.js";
-import { db } from "../config/firebaseAdmin.js";
+import { db } from "../config/firebase.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**

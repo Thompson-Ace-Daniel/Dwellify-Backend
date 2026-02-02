@@ -1,4 +1,4 @@
-import { db } from "../config/firebaseAdmin.js";
+import { db } from "../config/firebase.js";
 
 export const agentNotification = async (req, res) => {
   try {

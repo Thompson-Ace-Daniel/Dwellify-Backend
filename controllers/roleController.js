@@ -1,4 +1,4 @@
-import { admin, db } from "../config/firebaseAdmin.js";
+import { admin, db } from "../config/firebase.js";
 
 export const assignRole = async (req, res) => {
   const { uid, role } = req.body;

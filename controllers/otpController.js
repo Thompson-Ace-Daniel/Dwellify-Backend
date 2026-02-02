@@ -1,5 +1,5 @@
 import axios from "axios";
-import { admin, db } from "../config/firebaseAdmin.js";
+import { admin, db } from "../config/firebase.js";
 
 /* =========================
    SEND OTP

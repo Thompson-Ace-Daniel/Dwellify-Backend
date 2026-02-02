@@ -1,4 +1,4 @@
-import { admin } from "../config/firebaseAdmin.js";
+import { admin } from "../config/firebase.js";
 
 export const sendPushNotification = async (fcmToken, payload) => {
   if (!fcmToken) return;

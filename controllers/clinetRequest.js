@@ -1,4 +1,4 @@
-import { db } from "../config/firebaseAdmin.js";
+import { db } from "../config/firebase.js";
 import { sendPushNotification } from "../utils/push.js";
 
 export const clinetRequest = async (req, res) => {

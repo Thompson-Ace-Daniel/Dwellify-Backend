@@ -1,4 +1,4 @@
-import { db, bucket } from "../config/firebaseAdmin.js";
+import { db, bucket } from "../config/firebase.js";
 import { v4 as uuidv4 } from "uuid";
 
 // Helper to upload a file to Firebase Storage
