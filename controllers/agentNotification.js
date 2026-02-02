@@ -2,15 +2,15 @@ import { db } from "../config/firebase.js";
 
 export const agentNotification = async (req, res) => {
   try {
-    const { agentId, fcmToken } = req.body;
+    const { agentId, pushToken } = req.body;
 
-    if (!agentId || !fcmToken) {
-      return res.status(400).json({ error: "agentId and fcmToken required" });
+    if (!agentId || !pushToken) {
+      return res.status(400).json({ error: "agentId and pushToken required" });
     }
 
     await db.collection("agents").doc(agentId).set(
       {
-        fcmToken,
+        pushToken,
         updatedAt: Date.now(),
       },
       { merge: true },
