@@ -1,7 +1,7 @@
 import admin from "firebase-admin"; // Ensure firebase-admin is setup
 import { db } from "../config/firebase.js";
 
-export const createBookingRequest = async (req, res) => {
+const agentNotification = async (req, res) => {
   try {
     const { agentId, clientId, clientName, propertyType } = req.body;
 
@@ -44,3 +44,5 @@ export const createBookingRequest = async (req, res) => {
     res.status(500).json({ error: "Failed to process booking" });
   }
 };
+
+export default agentNotification;
