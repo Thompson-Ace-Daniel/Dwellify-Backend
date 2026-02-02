@@ -9,6 +9,21 @@ export const clinetRequest = async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    // ... existing code ...
+    if (fcmToken) {
+      await sendPushNotification(fcmToken, {
+        title: "New Client 🚨",
+        body: `${clientName} needs a ${propertyType}`,
+        data: {
+          requestId: String(docRef.id), // Ensure string
+          lat: String(lat), // Ensure string
+          lng: String(lng), // Ensure string
+          type: "NEW_BOOKING_REQUEST", // Add a type for easy handling
+        },
+      });
+    }
+    // ... rest of code ...
+
     const docRef = await db.collection("agent_requests").add({
       agentId,
       clientId,
@@ -45,3 +60,4 @@ export const clinetRequest = async (req, res) => {
     res.status(500).json({ error: "Failed to create request" });
   }
 };
+
