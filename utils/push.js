@@ -1,35 +1,51 @@
 import { admin } from "../config/firebase.js";
+import fetch from "node-fetch"; // Ensure you have node-fetch installed
 
-/**
- * Sends a push notification to a specific device.
- * @param {string} fcmToken - The target device token.
- * @param {object} payload - Title, body, and extra data.
- */
-export const sendPushNotification = async (fcmToken, { title, body, data }) => {
-  try {
-    const message = {
-      token: fcmToken,
-      notification: {
-        title: title || "New Notification",
-        body: body || "",
-      },
-      // Android specific settings for Notifee
-      android: {
-        priority: "high",
-        notification: {
-          channelId: "default", // Must match the channel created in your RN app
-          clickAction: "TOP_LEVEL_ACTION", // Important for triggering tap events
-        },
-      },
-      // Data payload for navigation (requestId, coordinates, etc.)
-      data: data || {},
-    };
-
-    const response = await admin.messaging().send(message);
-    console.log("🚀 Successfully sent message:", response);
-    return response;
-  } catch (error) {
-    console.error("❌ Error sending push notification:", error);
-    throw error;
+export const sendPushNotification = async (token, { title, body, data }) => {
+  // Check if it is an Expo Token
+  if (token.startsWith("ExponentPushToken")) {
+    return await sendExpoNotification(token, { title, body, data });
   }
+
+  // Otherwise, treat it as a native FCM token
+  return await sendFCMNotification(token, { title, body, data });
 };
+
+// --- PRIVATE HELPERS ---
+
+async function sendExpoNotification(token, { title, body, data }) {
+  console.log("📤 Sending via Expo Service...");
+  const response = await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      to: token,
+      title,
+      body,
+      data, // Expo automatically flattens this
+      sound: "default",
+    }),
+  });
+  const result = await response.json();
+  console.log("✅ Expo Response:", result);
+  return result;
+}
+
+async function sendFCMNotification(fcmToken, { title, body, data }) {
+  console.log("📤 Sending via FCM...");
+  const message = {
+    token: fcmToken,
+    notification: { title, body },
+    android: {
+      priority: "high",
+      notification: {
+        channelId: "default",
+      },
+    },
+    data: data || {},
+  };
+  return await admin.messaging().send(message);
+}
